@@ -1,24 +1,37 @@
-var gl;
+const width = 1920, height = 864
+var rectShader
+
+
+let cam;
 
 function preload() {
     console.log('preload!!!')
-
-
+    //相对地址为  index.html 所在目录
+    rectShader = loadShader('p5_sketch/vert/vertex.vert', 'p5_sketch/frag/audioBar.frag')
 }
 
 function setup() {
     console.log('setup!!!')
-    const canvas = document.getElementById('id_canvas')
-    gl = canvas.getContext('webgl')
-    // 使用完全不透明的黑色清除所有图像
-    gl.clearColor(0.0, 0.0, 0.0, 1.0);
-    // 用上面指定的颜色清除缓冲区
-    gl.clear(gl.COLOR_BUFFER_BIT);
+    createCanvas(1920, 864, WEBGL);
+    noStroke();
+
+    cam = createCapture(VIDEO);
+    cam.size(width, height)
+    cam.hide()
 }
 
 
 function draw() {
-    gl.enable(gl.BLEND)
-    console.log('draw!!!')
+    background(0);
+    blendMode(BLEND)
+    shader(rectShader);
+    rectShader.setUniform('tex0', cam)
+    rectShader.setUniform('resolution', [width, height]);
+    rectShader.setUniform('bars_energy_1', [random(255.), random(255.), random(255.), random(255.), random(255.),
+        random(255.), random(255.), random(255.), random(255.)])
+    rectShader.setUniform('bars_energy_2', [random(255.), random(255.), random(255.), random(255.), random(255.),
+        random(255.), random(255.), random(255.), random(255.), random(255.), random(255.), random(255.), random(255.),
+        random(255.), random(255.), random(255.),])
 
+    rect(0, 0, width, height);
 }
